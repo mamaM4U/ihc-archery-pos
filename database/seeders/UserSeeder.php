@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class UserSeeder extends Seeder
 {
@@ -19,9 +19,9 @@ class UserSeeder extends Seeder
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $admin = User::updateOrCreate(
-            ['email' => 'zetena@gmail.com'],
+            ['email' => 'admin@ihcarchery.com'],
             [
-                'name'     => 'Zetena Atmint',
+                'name' => 'Admin IHC Archery',
                 'password' => Hash::make('password'),
             ]
         );
@@ -36,9 +36,9 @@ class UserSeeder extends Seeder
         $admin->syncPermissions($permissions);
 
         $cashier = User::updateOrCreate(
-            ['email' => 'cashier@gmail.com'],
+            ['email' => 'kasir@ihcarchery.com'],
             [
-                'name'     => 'Cashier',
+                'name' => 'Kasir IHC Archery',
                 'password' => Hash::make('password'),
             ]
         );
@@ -49,6 +49,7 @@ class UserSeeder extends Seeder
             $cashier->syncRoles([$cashierRole->name]);
             $cashier->syncPermissions([]);
             app(PermissionRegistrar::class)->forgetCachedPermissions();
+
             return;
         }
 

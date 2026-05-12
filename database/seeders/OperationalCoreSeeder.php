@@ -31,8 +31,8 @@ class OperationalCoreSeeder extends Seeder
             return;
         }
 
-        $cashier = User::where('email', 'cashier@gmail.com')->first() ?? User::first();
-        $supervisor = User::where('email', 'arya@gmail.com')->first() ?? $cashier;
+        $cashier = User::where('email', 'kasir@ihcarchery.com')->first() ?? User::first();
+        $supervisor = User::where('email', 'admin@ihcarchery.com')->first() ?? $cashier;
 
         if (! $cashier || ! $supervisor) {
             $this->command?->warn('Skipping OperationalCoreSeeder because seed users are missing.');
@@ -72,7 +72,7 @@ class OperationalCoreSeeder extends Seeder
                 'opened_at' => $twoDaysAgoOpen,
                 'opening_cash' => 175000,
                 'expected_cash' => 175000,
-                'notes' => 'Shift pagi weekday untuk sample histori.',
+                'notes' => 'Shift pagi latihan rutin untuk sample histori.',
                 'status' => CashierShift::STATUS_OPEN,
             ]);
 
@@ -82,7 +82,7 @@ class OperationalCoreSeeder extends Seeder
                 'opened_at' => $yesterdayOpen,
                 'opening_cash' => 200000,
                 'expected_cash' => 200000,
-                'notes' => 'Shift sore yang nanti ditutup supervisor.',
+                'notes' => 'Shift sore event latihan yang ditutup supervisor.',
                 'status' => CashierShift::STATUS_OPEN,
             ]);
 
@@ -92,7 +92,7 @@ class OperationalCoreSeeder extends Seeder
                 'opened_at' => $todayOpen,
                 'opening_cash' => 250000,
                 'expected_cash' => 250000,
-                'notes' => 'Shift aktif hari ini.',
+                'notes' => 'Shift aktif hari ini - sesi latihan pagi.',
                 'status' => CashierShift::STATUS_OPEN,
             ]);
 
@@ -174,8 +174,8 @@ class OperationalCoreSeeder extends Seeder
                     cashier: $cashier,
                     shift: $historicalShift,
                     type: 'store_credit',
-                    returnReason: 'Pelanggan menerima credit note untuk item yang tidak sesuai.',
-                    notes: 'Retur sample untuk module 3 dengan store credit.',
+                    returnReason: 'Member menerima credit note untuk item yang tidak sesuai spesifikasi.',
+                    notes: 'Retur peralatan panahan dengan store credit.',
                     stockMutationService: $stockMutationService,
                 );
             }
@@ -193,8 +193,8 @@ class OperationalCoreSeeder extends Seeder
                     cashier: $cashier,
                     shift: $activeShift,
                     type: 'refund_cash',
-                    returnReason: 'Barang dikembalikan dan dana dikembalikan tunai.',
-                    notes: 'Retur sample untuk cash refund.',
+                    returnReason: 'Peralatan dikembalikan dan dana dikembalikan tunai.',
+                    notes: 'Retur peralatan panahan dengan cash refund.',
                     stockMutationService: $stockMutationService,
                 );
             }
@@ -218,7 +218,7 @@ class OperationalCoreSeeder extends Seeder
                     'refund_amount' => $unitPrice,
                     'credited_amount' => 0,
                     'total_return_amount' => $unitPrice,
-                    'notes' => 'Draft retur sample yang belum difinalisasi.',
+                    'notes' => 'Draft retur peralatan panahan yang belum difinalisasi.',
                 ]);
 
                 $draftReturn->items()->create([
@@ -229,7 +229,7 @@ class OperationalCoreSeeder extends Seeder
                     'qty_return' => 1,
                     'unit_price' => $unitPrice,
                     'subtotal' => $unitPrice,
-                    'return_reason' => 'Menunggu konfirmasi retur dari admin.',
+                    'return_reason' => 'Menunggu konfirmasi retur peralatan dari admin.',
                     'restock_to_inventory' => true,
                 ]);
             }
@@ -314,7 +314,7 @@ class OperationalCoreSeeder extends Seeder
                 'sales_return_id' => $salesReturn->id,
                 'amount' => $subtotal,
                 'balance' => $subtotal,
-                'notes' => 'Saldo toko sample dari retur ' . $salesReturn->code,
+                'notes' => 'Saldo toko sample dari retur '.$salesReturn->code,
                 'created_at' => $completedAt,
                 'updated_at' => $completedAt,
             ]);
@@ -354,7 +354,7 @@ class OperationalCoreSeeder extends Seeder
     private function generateSalesReturnCode(): string
     {
         do {
-            $code = 'SR-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(4));
+            $code = 'SR-'.now()->format('YmdHis').'-'.Str::upper(Str::random(4));
         } while (SalesReturn::where('code', $code)->exists());
 
         return $code;
