@@ -1,0 +1,15 @@
+/* Import design tokens first */
+@import './design-tokens.css';
+
+/* Tailwind directives */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Google Fonts - loaded via HTML head for better performance */
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
