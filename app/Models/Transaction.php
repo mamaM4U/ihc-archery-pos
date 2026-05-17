@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transaction extends Model
 {
@@ -20,6 +22,7 @@ class Transaction extends Model
         'shipping_cost' => 'integer',
         'grand_total' => 'integer',
         'bank_account_id' => 'integer',
+        'membership_plan_id' => 'integer',
     ];
 
     /**
@@ -42,6 +45,7 @@ class Transaction extends Model
         'payment_reference',
         'payment_url',
         'bank_account_id',
+        'membership_plan_id',
     ];
 
     /**
@@ -110,14 +114,28 @@ class Transaction extends Model
     }
 
     /**
+     * Get the membership plan associated with this transaction.
+     */
+    public function membershipPlan(): BelongsTo
+    {
+        return $this->belongsTo(MembershipPlan::class);
+    }
+
+    /**
+     * Determine if this transaction contains a membership item.
+     */
+    public function hasMembershipItem(): bool
+    {
+        return $this->membership_plan_id !== null;
+    }
+
+    /**
      * createdAt
-     *
-     * @return Attribute
      */
     protected function createdAt(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d-M-Y H:i:s'),
+            get: fn ($value) => Carbon::parse($value)->format('d-M-Y H:i:s'),
         );
     }
 }

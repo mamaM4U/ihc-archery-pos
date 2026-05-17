@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\PermissionRegistrar;
@@ -23,6 +22,7 @@ class DatabaseSeeder extends Seeder
             PaymentSettingSeeder::class,
             SampleDataSeeder::class,
             OperationalCoreSeeder::class,
+            MembershipPlanSeeder::class,
         ]);
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();

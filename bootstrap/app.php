@@ -1,13 +1,16 @@
 <?php
 
+use App\Http\Middleware\EnsureActiveCashierShift;
+use App\Http\Middleware\HandleInertiaRequests;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\UnauthorizedException;
-use App\Http\Middleware\EnsureActiveCashierShift;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -16,38 +19,44 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        api: __DIR__ . '/../routes/api.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            HandleInertiaRequests::class,
+            AddLinkHeadersForPreloadedAssets::class,
         ]);
 
         $middleware->alias([
-            'role'               => RoleMiddleware::class,
-            'permission'         => PermissionMiddleware::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
-            'active_shift'       => EnsureActiveCashierShift::class,
+            'active_shift' => EnsureActiveCashierShift::class,
         ]);
 
         $middleware->redirectGuestsTo(function (Request $request) {
             if ($request->is('customer/*') || $request->is('customer')) {
                 return route('customer.login');
             }
+
             return route('login');
         });
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (\Throwable $exception, Request $request) {
+        $exceptions->render(function (Throwable $exception, Request $request) {
             if ($exception instanceof ValidationException) {
                 return null;
             }
 
+            if ($exception instanceof AuthenticationException && ! $request->expectsJson()) {
+                return null;
+            }
+
             $status = match (true) {
+                $exception instanceof AuthenticationException => Response::HTTP_UNAUTHORIZED,
                 $exception instanceof UnauthorizedException => Response::HTTP_FORBIDDEN,
                 $exception instanceof HttpExceptionInterface => $exception->getStatusCode(),
                 default => Response::HTTP_INTERNAL_SERVER_ERROR,
@@ -63,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $status);
             }
 
-            if (!in_array($status, [
+            if (! in_array($status, [
                 Response::HTTP_UNAUTHORIZED,
                 Response::HTTP_FORBIDDEN,
                 Response::HTTP_NOT_FOUND,
@@ -76,8 +85,8 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return Inertia::render('Error', [
-                'status'    => $status,
-                'homeUrl'   => $request->user() ? route('dashboard') : url('/'),
+                'status' => $status,
+                'homeUrl' => $request->user() ? route('dashboard') : url('/'),
                 'homeLabel' => $request->user() ? __('Kembali ke Dashboard') : __('Kembali ke Beranda'),
             ])->toResponse($request)->setStatusCode($status);
         });

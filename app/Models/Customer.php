@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -68,5 +69,10 @@ class Customer extends Authenticatable
     public function customerCredits()
     {
         return $this->hasMany(CustomerCredit::class);
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(CustomerMembership::class);
     }
 }

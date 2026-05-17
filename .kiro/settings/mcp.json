@@ -1,12 +1,18 @@
 {
-    "mcpServers": {
-        "laravel-boost": {
-            "command": "/opt/homebrew/bin/php",
-            "args": [
-                "artisan",
-                "boost:mcp"
-            ],
-            "cwd": "/Users/afdrianj/Documents/Programming/Personal/zetenadev-projects/zetena-pos"
-        }
+  "mcpServers": {
+    "laravel-boost": {
+      "command": "/opt/homebrew/bin/php",
+      "args": [
+        "artisan",
+        "boost:mcp"
+      ],
+      "cwd": "/Users/afdrianj/Documents/Programming/Personal/zetenadev-projects/zetena-pos",
+      "autoApprove": [
+        "database-schema",
+        "database-query",
+        "database-connections",
+        "last-error"
+      ]
     }
+  }
 }
