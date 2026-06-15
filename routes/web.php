@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,6 +34,23 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
         ->middlewareFor('update', 'permission:roles-update')
         ->middlewareFor('destroy', 'permission:roles-delete');
 
+    // User Assignment Routes
+    Route::get('/users/assignments', [UserController::class, 'assignments'])
+        ->middleware('permission:users-create')
+        ->name('users.assignments');
+    Route::post('/users/assignments/coach', [UserController::class, 'assignCoach'])
+        ->middleware('permission:users-create')
+        ->name('users.assign-coach');
+    Route::post('/users/assignments/guardian', [UserController::class, 'assignGuardian'])
+        ->middleware('permission:users-create')
+        ->name('users.assign-guardian');
+    Route::delete('/users/assignments/coach', [UserController::class, 'removeCoachAssignment'])
+        ->middleware('permission:users-delete')
+        ->name('users.remove-coach');
+    Route::delete('/users/assignments/guardian', [UserController::class, 'removeGuardianAssignment'])
+        ->middleware('permission:users-delete')
+        ->name('users.remove-guardian');
+
     Route::resource('/users', UserController::class)
         ->except('show')
         ->middlewareFor('index', 'permission:users-access')
@@ -45,5 +62,13 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/logout', function () {
+    Auth::guard('web')->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect()->route('login');
+})->middleware('auth')->name('logout.get');
 
 require __DIR__.'/auth.php';
