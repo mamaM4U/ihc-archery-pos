@@ -1,10 +1,11 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleSeeder extends Seeder
 {
@@ -40,8 +41,16 @@ class RoleSeeder extends Seeder
         $superAdminRole = Role::firstOrCreate(['name' => 'super-admin']);
         $superAdminRole->syncPermissions(Permission::all());
 
+        // Create rewrite roles for archery management
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $adminRole->syncPermissions(Permission::all());
+
+        Role::firstOrCreate(['name' => 'coach']);
+        Role::firstOrCreate(['name' => 'guardian']);
+        Role::firstOrCreate(['name' => 'member']);
+
         // Create cashier role with basic permissions for public registration
-        $cashierRole        = Role::firstOrCreate(['name' => 'cashier']);
+        $cashierRole = Role::firstOrCreate(['name' => 'cashier']);
         $cashierPermissions = Permission::whereIn('name', [
             'dashboard-access',
             'transactions-access',
@@ -64,7 +73,7 @@ class RoleSeeder extends Seeder
     private function createRoleWithPermissions($roleName, $permissionNamePattern)
     {
         $permissions = Permission::where('name', 'like', $permissionNamePattern)->get();
-        $role        = Role::firstOrCreate(['name' => $roleName]);
+        $role = Role::firstOrCreate(['name' => $roleName]);
         $role->syncPermissions($permissions);
     }
 }
