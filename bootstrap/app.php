@@ -2,7 +2,6 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CoachMiddleware;
-use App\Http\Middleware\EnsureActiveCashierShift;
 use App\Http\Middleware\GuardianMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\MemberMiddleware;
@@ -38,20 +37,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
-            'active_shift' => EnsureActiveCashierShift::class,
             'role.admin' => AdminMiddleware::class,
             'role.coach' => CoachMiddleware::class,
             'role.guardian' => GuardianMiddleware::class,
             'role.member' => MemberMiddleware::class,
         ]);
 
-        $middleware->redirectGuestsTo(function (Request $request) {
-            if ($request->is('customer/*') || $request->is('customer')) {
-                return route('customer.login');
-            }
-
-            return route('login');
-        });
+        $middleware->redirectGuestsTo(fn () => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $exception, Request $request) {

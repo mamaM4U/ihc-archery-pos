@@ -12,68 +12,54 @@ class RoleSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    // Refactor the RoleSeeder to improve readability and avoid repetitive code
     public function run(): void
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $this->createRoleWithPermissions('users-access', '%users%');
-        $this->createRoleWithPermissions('roles-access', '%roles%');
-        $this->createRoleWithPermissions('permission-access', '%permissions%');
-        $this->createRoleWithPermissions('categories-access', '%categories%');
-        $this->createRoleWithPermissions('products-access', '%products%');
-        $this->createRoleWithPermissions('customers-access', '%customers%');
-        $this->createRoleWithPermissions('transactions-access', '%transactions%');
-        $this->createRoleWithPermissions('receivables-access', '%receivables%');
-        $this->createRoleWithPermissions('payables-access', '%payables%');
-        $this->createRoleWithPermissions('suppliers-access', '%suppliers%');
-        $this->createRoleWithPermissions('purchases-access', '%purchases%');
-        $this->createRoleWithPermissions('purchase-returns-access', '%purchase-returns%');
-        $this->createRoleWithPermissions('reports-access', '%reports%');
-        $this->createRoleWithPermissions('profits-access', '%profits%');
-        $this->createRoleWithPermissions('payment-settings-access', '%payment-settings%');
-        $this->createRoleWithPermissions('stock-opnames-access', '%stock-opnames%');
-        $this->createRoleWithPermissions('stock-mutations-access', '%stock-mutations%');
-        $this->createRoleWithPermissions('sales-returns-access', '%sales-returns%');
-        $this->createRoleWithPermissions('cashier-shifts-access', '%cashier-shifts%');
-        $this->createRoleWithPermissions('audit-logs-access', '%audit-logs%');
+        // 1. Admin
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $admin->syncPermissions(Permission::all());
 
-        $superAdminRole = Role::firstOrCreate(['name' => 'super-admin']);
-        $superAdminRole->syncPermissions(Permission::all());
-
-        // Create rewrite roles for archery management
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $adminRole->syncPermissions(Permission::all());
-
-        Role::firstOrCreate(['name' => 'coach']);
-        Role::firstOrCreate(['name' => 'guardian']);
-        Role::firstOrCreate(['name' => 'member']);
-
-        // Create cashier role with basic permissions for public registration
-        $cashierRole = Role::firstOrCreate(['name' => 'cashier']);
-        $cashierPermissions = Permission::whereIn('name', [
+        // 2. Coach
+        $coach = Role::firstOrCreate(['name' => 'coach']);
+        $coach->syncPermissions([
             'dashboard-access',
-            'transactions-access',
-            'cashier-shifts-access',
-            'cashier-shifts-open',
-            'cashier-shifts-close',
-            'customers-access',
-            'customers-create',
-            'receivables-access',
-            'receivables-pay',
-            'payables-access',
-            'payables-pay',
-            'suppliers-access',
-        ])->get();
-        $cashierRole->syncPermissions($cashierPermissions);
+            'templates-access',
+            'templates-create',
+            'templates-update',
+            'templates-delete',
+            'slots-access',
+            'slots-create',
+            'slots-cancel',
+            'bookings-access',
+            'bookings-create',
+            'bookings-approve',
+            'bookings-reject',
+            'bookings-cancel',
+            'member-data-access',
+            'member-data-create',
+        ]);
+
+        // 3. Guardian
+        $guardian = Role::firstOrCreate(['name' => 'guardian']);
+        $guardian->syncPermissions([
+            'dashboard-access',
+            'bookings-access',
+            'bookings-approve',
+            'bookings-reject',
+            'member-data-access',
+        ]);
+
+        // 4. Member
+        $member = Role::firstOrCreate(['name' => 'member']);
+        $member->syncPermissions([
+            'dashboard-access',
+            'bookings-access',
+            'bookings-create',
+            'bookings-cancel',
+            'member-data-access',
+        ]);
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-    }
-
-    private function createRoleWithPermissions($roleName, $permissionNamePattern)
-    {
-        $permissions = Permission::where('name', 'like', $permissionNamePattern)->get();
-        $role = Role::firstOrCreate(['name' => $roleName]);
-        $role->syncPermissions($permissions);
     }
 }

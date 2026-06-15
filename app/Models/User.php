@@ -93,17 +93,7 @@ class User extends Authenticatable
      */
     public function isSuperAdmin()
     {
-        return $this->hasRole('super-admin');
-    }
-
-    public function cashierShifts()
-    {
-        return $this->hasMany(CashierShift::class);
-    }
-
-    public function auditLogs()
-    {
-        return $this->hasMany(AuditLog::class);
+        return $this->hasRole('admin');
     }
 
     /**
@@ -149,7 +139,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->hasRole('admin') || $this->hasRole('super-admin');
+        return $this->hasRole('admin');
     }
 
     /**
