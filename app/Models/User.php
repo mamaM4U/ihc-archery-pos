@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -132,6 +133,22 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'coach_members', 'coach_id', 'member_id')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the weekly templates for this coach.
+     */
+    public function weeklyTemplates(): HasMany
+    {
+        return $this->hasMany(CoachWeeklyTemplate::class, 'coach_id');
+    }
+
+    /**
+     * Get the schedule slots for this coach.
+     */
+    public function scheduleSlots(): HasMany
+    {
+        return $this->hasMany(ScheduleSlot::class, 'coach_id');
     }
 
     /**

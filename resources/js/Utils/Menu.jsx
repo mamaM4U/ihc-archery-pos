@@ -28,7 +28,8 @@ const getSafeRoute = (name, fallback = "#") => {
 };
 
 export default function Menu() {
-    const { url, auth } = usePage().props;
+    const { auth } = usePage().props;
+    const url = usePage().url || "";
     const userRole = auth?.user?.role || "member";
 
     const menuNavigation = [];
@@ -98,10 +99,10 @@ export default function Menu() {
         });
     }
 
-    // 3. Coach Section
-    if (userRole === "coach") {
+    // 3. Coach & Admin Section
+    if (userRole === "coach" || userRole === "admin") {
         menuNavigation.push({
-            title: "Pelatihan (Coach)",
+            title: userRole === "admin" ? "Jadwal & Pelatihan" : "Pelatihan (Coach)",
             details: [
                 {
                     title: "Template Jadwal",

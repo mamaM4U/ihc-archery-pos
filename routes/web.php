@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Coach\TemplateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -57,6 +58,14 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
         ->middlewareFor(['create', 'store'], 'permission:users-create')
         ->middlewareFor(['edit', 'update'], 'permission:users-update')
         ->middlewareFor('destroy', 'permission:users-delete');
+
+    Route::resource('/templates', TemplateController::class)
+        ->middlewareFor('index', 'permission:templates-access')
+        ->middlewareFor('create', 'permission:templates-create')
+        ->middlewareFor('store', 'permission:templates-create')
+        ->middlewareFor('edit', 'permission:templates-update')
+        ->middlewareFor('update', 'permission:templates-update')
+        ->middlewareFor('destroy', 'permission:templates-delete');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
