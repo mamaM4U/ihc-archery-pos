@@ -9,7 +9,14 @@ export default function Sidebar({ sidebarOpen }) {
     const { auth, storeProfile } = usePage().props;
     const menuNavigation = Menu();
 
-    const storeName = storeProfile?.name || "KASIR";
+    const userRole = auth?.user?.role || "IHC Archery Club";
+    const roleNames = {
+        admin: "Admin",
+        coach: "Coach",
+        guardian: "Guardian",
+        member: "Member",
+    };
+    const storeName = roleNames[userRole] || userRole.toUpperCase();
     const storeLogo = storeProfile?.logo || null;
     const storeInitial =
         storeName?.charAt(0)?.toUpperCase() ||

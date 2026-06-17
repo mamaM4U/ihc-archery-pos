@@ -3,15 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +24,9 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'phone',
+        'role',
+        'is_active',
     ];
 
     /**
@@ -45,6 +49,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -67,7 +72,7 @@ class User extends Authenticatable
                     return $value;
                 }
 
-                return asset('storage/' . ltrim($value, '/'));
+                return asset('storage/'.ltrim($value, '/'));
             }
         );
     }
@@ -79,7 +84,7 @@ class User extends Authenticatable
     {
         return $this->getAllPermissions()->mapWithKeys(function ($permission) {
             return [
-                $permission['name'] => true
+                $permission['name'] => true,
             ];
         });
     }
@@ -89,16 +94,92 @@ class User extends Authenticatable
      */
     public function isSuperAdmin()
     {
-        return $this->hasRole('super-admin');
+        return $this->hasRole('admin');
     }
 
-    public function cashierShifts()
+    /**
+     * Guardians for this user (if this user is a member).
+     */
+    public function guardians()
     {
-        return $this->hasMany(CashierShift::class);
+        return $this->belongsToMany(User::class, 'user_relationships', 'member_id', 'guardian_id')
+            ->withPivot('can_approve_booking')
+            ->withTimestamps();
     }
 
-    public function auditLogs()
+    /**
+     * Members/dependents managed by this user (if this user is a guardian).
+     */
+    public function members()
     {
-        return $this->hasMany(AuditLog::class);
+        return $this->belongsToMany(User::class, 'user_relationships', 'guardian_id', 'member_id')
+            ->withPivot('can_approve_booking')
+            ->withTimestamps();
+    }
+
+    /**
+     * Coaches assigned to this user (if this user is a member).
+     */
+    public function coaches()
+    {
+        return $this->belongsToMany(User::class, 'coach_members', 'member_id', 'coach_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Members assigned to this coach (if this user is a coach).
+     */
+    public function coachMembers()
+    {
+        return $this->belongsToMany(User::class, 'coach_members', 'coach_id', 'member_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the weekly templates for this coach.
+     */
+    public function weeklyTemplates(): HasMany
+    {
+        return $this->hasMany(CoachWeeklyTemplate::class, 'coach_id');
+    }
+
+    /**
+     * Get the schedule slots for this coach.
+     */
+    public function scheduleSlots(): HasMany
+    {
+        return $this->hasMany(ScheduleSlot::class, 'coach_id');
+    }
+
+    /**
+     * Check if user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    /**
+     * Check if user is a coach.
+     */
+    public function isCoach(): bool
+    {
+        return $this->hasRole('coach');
+    }
+
+    /**
+     * Check if user is a guardian.
+     */
+    public function isGuardian(): bool
+    {
+        return $this->hasRole('guardian');
+    }
+
+    /**
+     * Check if user is a member.
+     */
+    public function isMember(): bool
+    {
+        return $this->hasRole('member');
     }
 }

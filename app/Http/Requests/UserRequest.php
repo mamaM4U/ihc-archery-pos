@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,20 +19,21 @@ class UserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
-        $userId = $this->route('user')?->id ?? null;
+        $userId = $this->route('user')?->id ?? $this->route('user') ?? null;
         $isCreate = $this->isMethod('post');
 
         return [
-            'name'            => ['required', 'string', 'max:255'],
-            'email'           => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
-            'password'        => [$isCreate ? 'required' : 'nullable', 'string', 'min:8', 'confirmed'],
-            'avatar'          => ['nullable', 'image', 'max:2048'],
-            'selectedRoles'   => ['required', 'array', 'min:1'],
-            'selectedRoles.*' => ['string'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
+            'password' => [$isCreate ? 'required' : 'nullable', 'string', 'min:8', 'confirmed'],
+            'avatar' => ['nullable', 'image', 'max:2048'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'role' => ['required', 'string', Rule::in(['admin', 'coach', 'guardian', 'member'])],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 }

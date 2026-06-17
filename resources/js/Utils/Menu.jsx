@@ -1,220 +1,69 @@
 import { usePage } from "@inertiajs/react";
 import {
-    IconArrowBackUp,
-    IconBooks,
-    IconBox,
-    IconCategory,
-    IconChartArrowsVertical,
-    IconChartBarPopular,
-    IconChartInfographic,
     IconCirclePlus,
-    IconClockHour6,
-    IconCreditCard,
-    IconFileCertificate,
-    IconFileDescription,
-    IconFolder,
     IconLayout2,
-    IconBuildingStore,
-    IconSchool,
-    IconShoppingCart,
     IconTable,
     IconUserBolt,
     IconUserShield,
-    IconUserSquare,
     IconUsers,
-    IconUsersPlus,
-    IconFileInvoice,
-    IconBuildingWarehouse,
-    IconCurrencyDollar,
-    IconWallet,
-    IconFileSearch,
+    IconCalendar,
+    IconClock,
+    IconChecks,
+    IconActivity,
+    IconEye,
+    IconLink,
 } from "@tabler/icons-react";
 import hasAnyPermission from "./Permission";
 import React from "react";
 
-export default function Menu() {
-    // define use page
-    const { url } = usePage();
+/**
+ * Bulletproof helper to get route URL or fallback.
+ */
+const getSafeRoute = (name, fallback = "#") => {
+    try {
+        return route(name);
+    } catch (e) {
+        return fallback;
+    }
+};
 
-    // define menu navigations
-    const menuNavigation = [
-        {
-            title: "Overview",
-            details: [
-                {
-                    title: "Dashboard",
-                    href: route("dashboard"),
-                    active: url === "/dashboard" ? true : false, // Update comparison here
-                    icon: <IconLayout2 size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["dashboard-access"]),
-                },
-            ],
-        },
-        {
-            title: "Data Management",
-            details: [
-                {
-                    title: "Kategori",
-                    href: route("categories.index"),
-                    active: url === "/dashboard/categories" ? true : false,
-                    icon: <IconFolder size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["categories-access"]),
-                },
-                {
-                    title: "Produk",
-                    href: route("products.index"),
-                    active: url === "/dashboard/products" ? true : false,
-                    icon: <IconBox size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["products-access"]),
-                },
-                {
-                    title: "Stok",
-                    icon: <IconBuildingWarehouse size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission([
-                        "stock-opnames-access",
-                        "stock-mutations-access",
-                        "purchases-access",
-                        "purchase-returns-access",
-                    ]),
-                    subdetails: [
-                        {
-                            title: "Stock Opname",
-                            href: route("stock-opnames.index"),
-                            active: url.startsWith("/dashboard/stock-opnames"),
-                            icon: <IconFileDescription size={20} strokeWidth={1.5} />,
-                            permissions: hasAnyPermission(["stock-opnames-access"]),
-                        },
-                        {
-                            title: "Mutasi Stok",
-                            href: route("stock-mutations.index"),
-                            active: url.startsWith("/dashboard/stock-mutations"),
-                            icon: <IconChartArrowsVertical size={20} strokeWidth={1.5} />,
-                            permissions: hasAnyPermission(["stock-mutations-access"]),
-                        },
-                        {
-                            title: "Pembelian (Barang Masuk)",
-                            href: route("purchases.index"),
-                            active: url.startsWith("/dashboard/purchases"),
-                            icon: <IconShoppingCart size={20} strokeWidth={1.5} />,
-                            permissions: hasAnyPermission(["purchases-access"]),
-                        },
-                        {
-                            title: "Retur Pembelian",
-                            href: route("purchase-returns.index"),
-                            active: url.startsWith("/dashboard/purchase-returns"),
-                            icon: <IconArrowBackUp size={20} strokeWidth={1.5} />,
-                            permissions: hasAnyPermission(["purchase-returns-access"]),
-                        },
-                    ],
-                },
-                {
-                    title: "Audit Log",
-                    href: route("audit-logs.index"),
-                    active: url.startsWith("/dashboard/audit-logs"),
-                    icon: <IconFileSearch size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["audit-logs-access"]),
-                },
-                {
-                    title: "Shift Kasir",
-                    href: route("cashier-shifts.index"),
-                    active: url.startsWith("/dashboard/cashier-shifts"),
-                    icon: <IconWallet size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["cashier-shifts-access"]),
-                },
-                {
-                    title: "Pelanggan",
-                    href: route("customers.index"),
-                    active: url === "/dashboard/customers" ? true : false,
-                    icon: <IconUsersPlus size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["customers-access"]),
-                },
-            ],
-        },
-        {
-            title: "Transaksi",
-            details: [
-                {
-                    title: "Transaksi",
-                    href: route("transactions.index"),
-                    active: url === "/dashboard/transactions" ? true : false,
-                    icon: <IconShoppingCart size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["transactions-access"]),
-                },
-                {
-                    title: "Riwayat Transaksi",
-                    href: route("transactions.history"),
-                    active:
-                        url === "/dashboard/transactions/history"
-                            ? true
-                            : false,
-                    icon: <IconClockHour6 size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["transactions-access"]),
-                },
-                {
-                    title: "Retur Penjualan",
-                    href: route("sales-returns.index"),
-                    active: url.startsWith("/dashboard/sales-returns"),
-                    icon: <IconFileCertificate size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["sales-returns-access"]),
-                },
-                {
-                    title: "Nota Barang (Piutang)",
-                    href: route("receivables.index"),
-                    active: url.startsWith("/dashboard/receivables"),
-                    icon: <IconFileInvoice size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["receivables-access"]),
-                },
-                {
-                    title: "Supplier",
-                    href: route("suppliers.index"),
-                    active: url.startsWith("/dashboard/suppliers"),
-                    icon: <IconUserBolt size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["suppliers-access"]),
-                },
-                {
-                    title: "Hutang Supplier",
-                    href: route("payables.index"),
-                    active: url.startsWith("/dashboard/payables"),
-                    icon: <IconCurrencyDollar size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["payables-access"]),
-                },
-            ],
-        },
-        {
-            title: "Laporan",
-            details: [
-                {
-                    title: "Laporan Penjualan",
-                    href: route("reports.sales.index"),
-                    active: url.startsWith("/dashboard/reports/sales"),
-                    icon: (
-                        <IconChartArrowsVertical size={20} strokeWidth={1.5} />
-                    ),
-                    permissions: hasAnyPermission(["reports-access"]),
-                },
-                {
-                    title: "Laporan Keuntungan",
-                    href: route("reports.profits.index"),
-                    active: url.startsWith("/dashboard/reports/profits"),
-                    icon: <IconChartBarPopular size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["profits-access"]),
-                },
-            ],
-        },
-        {
+export default function Menu() {
+    const { auth } = usePage().props;
+    const url = usePage().url || "";
+    const userRole = auth?.user?.role || "member";
+
+    const menuNavigation = [];
+
+    // 1. Overview Section (All Roles)
+    menuNavigation.push({
+        title: "Overview",
+        details: [
+            {
+                title: "Dashboard",
+                href: getSafeRoute("dashboard"),
+                active: url === "/dashboard" ? true : false,
+                icon: <IconLayout2 size={20} strokeWidth={1.5} />,
+                permissions: hasAnyPermission(["dashboard-access"]),
+            },
+        ],
+    });
+
+    // 2. Admin Section
+    if (userRole === "admin") {
+        menuNavigation.push({
             title: "User Management",
             details: [
                 {
                     title: "Hak Akses",
-                    href: route("permissions.index"),
-                    active: url === "/dashboard/permissions" ? true : false, // Update comparison here
+                    href: getSafeRoute("permissions.index"),
+                    active: url === "/dashboard/permissions" ? true : false,
                     icon: <IconUserBolt size={20} strokeWidth={1.5} />,
                     permissions: hasAnyPermission(["permissions-access"]),
                 },
                 {
                     title: "Akses Group",
-                    href: route("roles.index"),
-                    active: url === "/dashboard/roles" ? true : false, // Update comparison here
+                    href: getSafeRoute("roles.index"),
+                    active: url === "/dashboard/roles" ? true : false,
                     icon: <IconUserShield size={20} strokeWidth={1.5} />,
                     permissions: hasAnyPermission(["roles-access"]),
                 },
@@ -225,61 +74,120 @@ export default function Menu() {
                     subdetails: [
                         {
                             title: "Data Pengguna",
-                            href: route("users.index"),
+                            href: getSafeRoute("users.index"),
                             icon: <IconTable size={20} strokeWidth={1.5} />,
                             active: url === "/dashboard/users" ? true : false,
                             permissions: hasAnyPermission(["users-access"]),
                         },
                         {
                             title: "Tambah Data Pengguna",
-                            href: route("users.create"),
-                            icon: (
-                                <IconCirclePlus size={20} strokeWidth={1.5} />
-                            ),
-                            active:
-                                url === "/dashboard/users/create"
-                                    ? true
-                                    : false,
+                            href: getSafeRoute("users.create"),
+                            icon: <IconCirclePlus size={20} strokeWidth={1.5} />,
+                            active: url === "/dashboard/users/create" ? true : false,
+                            permissions: hasAnyPermission(["users-create"]),
+                        },
+                        {
+                            title: "Penugasan Hubungan",
+                            href: getSafeRoute("users.assignments"),
+                            icon: <IconLink size={20} strokeWidth={1.5} />,
+                            active: url === "/dashboard/users/assignments" ? true : false,
                             permissions: hasAnyPermission(["users-create"]),
                         },
                     ],
                 },
             ],
-        },
-        {
-            title: "Pengaturan",
+        });
+    }
+
+    // 3. Coach & Admin Section
+    if (userRole === "coach" || userRole === "admin") {
+        menuNavigation.push({
+            title: userRole === "admin" ? "Jadwal & Pelatihan" : "Pelatihan (Coach)",
             details: [
                 {
-                    title: "Payment Gateway",
-                    href: route("settings.payments.edit"),
-                    active: url === "/dashboard/settings/payments",
-                    icon: <IconCreditCard size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["payment-settings-access"]),
+                    title: "Template Jadwal",
+                    href: getSafeRoute("templates.index", "/dashboard/templates"),
+                    active: url.startsWith("/dashboard/templates") ? true : false,
+                    icon: <IconCalendar size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["templates-access"]),
                 },
                 {
-                    title: "Profil Toko",
-                    href: route("settings.store"),
-                    active: url === "/dashboard/settings/store",
-                    icon: <IconBuildingStore size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["dashboard-access"]),
+                    title: "Slot Latihan",
+                    href: getSafeRoute("slots.index", "/dashboard/slots"),
+                    active: url.startsWith("/dashboard/slots") ? true : false,
+                    icon: <IconClock size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["slots-access"]),
                 },
                 {
-                    title: "Rekening Bank",
-                    href: route("settings.bank-accounts.index"),
-                    active: url === "/dashboard/settings/bank-accounts",
-                    icon: <IconCreditCard size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["payment-settings-access"]),
+                    title: "Persetujuan Booking",
+                    href: getSafeRoute("bookings.index", "/dashboard/bookings"),
+                    active: url.startsWith("/dashboard/bookings") ? true : false,
+                    icon: <IconChecks size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["bookings-access"]),
                 },
                 {
-                    title: "Target Penjualan",
-                    href: route("settings.target"),
-                    active: url === "/dashboard/settings/target",
-                    icon: <IconChartInfographic size={20} strokeWidth={1.5} />,
-                    permissions: hasAnyPermission(["dashboard-access"]),
+                    title: "Daftar Atlet",
+                    href: getSafeRoute("coach.members", "/dashboard/coach/members"),
+                    active: url.startsWith("/dashboard/coach/members") ? true : false,
+                    icon: <IconUsers size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["member-data-access"]),
                 },
             ],
-        },
-    ];
+        });
+    }
+
+    // 4. Guardian Section
+    if (userRole === "guardian") {
+        menuNavigation.push({
+            title: "Pengawasan (Wali)",
+            details: [
+                {
+                    title: "Daftar Atlet",
+                    href: getSafeRoute("guardian.members", "/dashboard/guardian/members"),
+                    active: url.startsWith("/dashboard/guardian/members") ? true : false,
+                    icon: <IconUsers size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["member-data-access"]),
+                },
+                {
+                    title: "Persetujuan Jadwal",
+                    href: getSafeRoute("guardian.bookings", "/dashboard/guardian/bookings"),
+                    active: url.startsWith("/dashboard/guardian/bookings") ? true : false,
+                    icon: <IconChecks size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["bookings-access"]),
+                },
+            ],
+        });
+    }
+
+    // 5. Member Section
+    if (userRole === "member") {
+        menuNavigation.push({
+            title: "Menu Atlet (Member)",
+            details: [
+                {
+                    title: "Jadwal Tersedia",
+                    href: getSafeRoute("member.schedule", "/dashboard/member/schedule"),
+                    active: url.startsWith("/dashboard/member/schedule") ? true : false,
+                    icon: <IconCalendar size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["bookings-access"]),
+                },
+                {
+                    title: "Booking Saya",
+                    href: getSafeRoute("member.bookings", "/dashboard/member/bookings"),
+                    active: url.startsWith("/dashboard/member/bookings") ? true : false,
+                    icon: <IconChecks size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["bookings-access"]),
+                },
+                {
+                    title: "Progress Fisik",
+                    href: getSafeRoute("member.data", "/dashboard/member/my-data"),
+                    active: url.startsWith("/dashboard/member/my-data") ? true : false,
+                    icon: <IconActivity size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["member-data-access"]),
+                },
+            ],
+        });
+    }
 
     return menuNavigation;
 }
