@@ -185,15 +185,15 @@ export default function Create({ coaches }) {
 
                             <Input
                                 type="number"
-                                label="Batas Pembukaan Booking (Hari)"
-                                placeholder="7"
-                                min="1"
-                                max="90"
+                                label="Batas Akhir Booking (H-x Hari)"
+                                placeholder="2"
+                                min="0"
+                                max="30"
                                 value={data.booking_open_days}
                                 onChange={(e) => setData("booking_open_days", e.target.value === "" ? "" : parseInt(e.target.value) || 0)}
                                 errors={errors.booking_open_days}
                                 required
-                                helpText="Menentukan berapa hari ke depan jadwal otomatis dapat dibooking."
+                                helpText="Batas hari sebelum sesi latihan di mana atlet terakhir bisa melakukan booking (misal: jika diisi 2, maka sesi tanggal 17 terakhir dapat dibooking tanggal 15)."
                             />
 
                             <div className="flex flex-col gap-2">
@@ -204,14 +204,12 @@ export default function Create({ coaches }) {
                                     <button
                                         type="button"
                                         onClick={() => setData("is_active", !data.is_active)}
-                                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                            data.is_active ? "bg-primary-500" : "bg-slate-200 dark:bg-slate-800"
-                                        }`}
+                                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${data.is_active ? "bg-primary-500" : "bg-slate-200 dark:bg-slate-800"
+                                            }`}
                                     >
                                         <span
-                                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                                data.is_active ? "translate-x-5" : "translate-x-0"
-                                            }`}
+                                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${data.is_active ? "translate-x-5" : "translate-x-0"
+                                                }`}
                                         />
                                     </button>
                                     <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -285,7 +283,7 @@ export default function Create({ coaches }) {
                                 </div>
                             )}
 
-                             <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                            <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                                 {data.slots.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-center bg-slate-50/25 dark:bg-slate-900/20">
                                         <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 rounded-full mb-4">

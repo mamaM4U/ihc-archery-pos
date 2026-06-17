@@ -207,15 +207,15 @@ export default function Edit({ template, coaches }) {
 
                             <Input
                                 type="number"
-                                label="Batas Pembukaan Booking (Hari)"
-                                placeholder="7"
-                                min="1"
-                                max="90"
+                                label="Batas Akhir Booking (H-x Hari)"
+                                placeholder="2"
+                                min="0"
+                                max="30"
                                 value={data.booking_open_days}
                                 onChange={(e) => setData("booking_open_days", e.target.value === "" ? "" : parseInt(e.target.value) || 0)}
                                 errors={errors.booking_open_days}
                                 required
-                                helpText="Menentukan berapa hari ke depan jadwal otomatis dapat dibooking."
+                                helpText="Batas hari sebelum sesi latihan di mana atlet terakhir bisa melakukan booking (misal: jika diisi 2, maka sesi tanggal 17 terakhir dapat dibooking tanggal 15)."
                             />
 
                             <div className="flex flex-col gap-2">

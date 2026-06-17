@@ -100,10 +100,10 @@ export default function Index({ templates }) {
                                     </th>
                                 )}
                                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                    Batas Booking (Hari)
+                                    Batas Akhir Booking
                                 </th>
                                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                    Jumlah Sesi Sesi
+                                    Jumlah Sesi
                                 </th>
                                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                     Status
@@ -151,7 +151,7 @@ export default function Index({ templates }) {
                                             </td>
                                         )}
                                         <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                                            {template.booking_open_days} hari ke depan
+                                            H-{template.booking_open_days} sebelum sesi
                                         </td>
                                         <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
                                             <div className="flex flex-wrap gap-1 items-center">
